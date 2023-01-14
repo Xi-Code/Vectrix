@@ -11,3 +11,9 @@ def handle_verification():
         return challenge
     else:
         return 'Verification token mismatch', 403
+
+
+# Launch the Flask dev server
+if __name__ == '__main__':
+    app.run(debug=True)
+    
