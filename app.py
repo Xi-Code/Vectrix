@@ -12,6 +12,12 @@ def handle_verification():
     else:
         return 'Verification token mismatch', 403
 
+# Add a method to process a WhatsApp message and send a reply
+def process_whatsapp_message():
+    message = request.get_json()
+    print(message)
+    return 'OK'
+
 
 # Launch the Flask dev server
 if __name__ == '__main__':
