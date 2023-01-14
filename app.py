@@ -2,6 +2,12 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
+# Add a route for the home page for the web app
+@app.route('/', methods=['GET'])
+def handle_verification():
+    return 'Hello World!'
+    
+
 @app.route('/whatsapp', methods=['GET'])
 def handle_verification():
     mode = request.args.get('hub.mode')
@@ -15,5 +21,5 @@ def handle_verification():
 
 # Launch the Flask dev server
 if __name__ == '__main__':
-    app.run(debug=True)
-    
+    app.run()
+
