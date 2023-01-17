@@ -8,6 +8,7 @@ This app allows you to connect your WhatsApp account to GPT-3 (Generative Pre-tr
 - Have conversations with GPT-3 using natural language
 - Interact with GPT-3 using your own custom contexts and topics
 - By connecting GPT to your own data sources using gpt-index, you can create a functional chatbot
+- Update the WhatsApp parameters and connections settings by visiting the update page
 
 ## Prerequisites
 

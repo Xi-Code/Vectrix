@@ -1,9 +1,19 @@
 # Imports
-from flask import Flask, request
+from flask import Flask, request, render_template, redirect, url_for
 from gpt_processor import ProcessQuestion
 from send_message import SendMessage
+import json
 
 app = Flask(__name__)
+
+def load_data():
+    try:
+        with open("data.json", "r") as json_file:
+            data = json.load(json_file)
+            return data
+    except:
+        return None
+
 
 @app.route('/whatsapp', methods=['GET', 'POST'])
 def handle_webhook():
@@ -28,5 +38,18 @@ def handle_webhook():
 
         return 'OK', 200
 
+@app.route('/update', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        chat_context = request.form['chat_context']
+        sender_phone_number = request.form['sender_phone_number']
+        data = {'chat_context': chat_context, 'sender_phone_number': sender_phone_number}
+        with open('data.json', 'w') as outfile:
+            json.dump(data, outfile)
+        return 'Form submitted successfully!'
+    else:
+        data=load_data()   
+    return render_template('update_settings.html',data=data)
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
