@@ -5,6 +5,8 @@ from google.oauth2 import service_account
 config = configparser.ConfigParser()
 config.read('keys/config.ini')
 
+
+
 # Set environment variables
 # Google Cloud
 key_path = 'keys/appgpt-374716-6184be28027d.json'
@@ -49,12 +51,20 @@ def ProcessQuestion(whatsapp_message):
     We will also check Google BigQuery to see if there is a conversation history.
     This function returns the complete conversation as a String
     '''
-    
-
     # Let's check BigQuery to see if we have a conversation with this user
-
     sender_phone_number = whatsapp_message['entry'][0]['changes'][0]['value']['messages'][0]['from']
 
+    # Check the message content
+    if whatsapp_message['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'] == 'RESET CONVERSATION':
+        query = f'''
+        DELETE 
+        FROM `conversations.chat_history`
+        WHERE PHONE_NUMBER = {sender_phone_number}
+        '''
+        run_query(query)
+        return 'Conversation reset', 'Conversation reset'
+
+    
     query = '''
     select WHATSAP_MESSAGE, GPT_RESPONSE, INSERT_TS
     from `conversations.chat_history`
@@ -66,8 +76,13 @@ def ProcessQuestion(whatsapp_message):
 
     print(f'We feteched {len(results)} rows from BigQuery')
 
+    # Load the company name from the data.json file
+    with open('data.json') as f:
+        data = json.load(f)
+        company_name = data['company_name']
+        company_business_type = data['company_business_type']
 
-    context = "Pretend you are a customer service chatbot working for a textile wholesale named Quality Textiles.\n\n"
+    context = f"Pretend you are a customer service chatbot working for a {company_business_type} named {company_name}. Only answer questions related to this company.\n\n"
     message_id = whatsapp_message['entry'][0]['changes'][0]['value']['messages'][0]['id']
     sender_phone_number = whatsapp_message['entry'][0]['changes'][0]['value']['messages'][0]['from']
 
@@ -111,19 +126,21 @@ def ProcessQuestion(whatsapp_message):
             conversation += 'CUSTOMER: "' + customer + '"\n'
             conversation += bot + '\n\n"'
             
-        print('adding to existing conversation\n')
         conversation += f"CUSTOMER: {whatsapp_message['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']}"
         response = call_openai(conversation)
         answer = str(response['choices'][0]['text'])
         conversation += answer
         response = json.dumps(response)
         
-        # escape all \n characters in the response
+        # escape all \n characters in the JSON-data
         response = re.sub(r'\\n', r'\\\\n', response)
         response = re.sub(r"'", r"\'", response)
         response = re.sub(r'"', r'\"', response)
-        print(response)
-        results =  run_query(query % ("'" + message_id + "'", "JSON'" + json.dumps(whatsapp_message) + "'","JSON'" + (response) + "'",sender_phone_number))
+        whatsapp_message = re.sub(r"'", r"\'", json.dumps(whatsapp_message))
+        whatsapp_message = re.sub(r'"', r'\"', whatsapp_message)
+        whatsapp_message = re.sub(r'\\n', r'\\\\n', whatsapp_message)
+        print(query % ("'" + message_id + "'", "JSON'" + whatsapp_message + "'","JSON'" + (response) + "'",sender_phone_number))
+        results =  run_query(query % ("'" + message_id + "'", "JSON'" + whatsapp_message + "'","JSON'" + (response) + "'",sender_phone_number))
 
         return answer, conversation
 
