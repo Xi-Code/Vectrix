@@ -1,6 +1,5 @@
 # Vectrix
-Vectrix is a simple GPT and WhatsApp connector 
-This app allows you to connect your WhatsApp account to GPT-3 (Generative Pre-trained Transformer 3) and have conversations with the AI.
+Vectrix is a multi-functional chatbot powered by GPT-3, with the ability to connect to both WhatsApp and Messenger. The chatbot can be linked with various types of data including FAQs, emails, and order information, allowing it to provide accurate and relevant responses in real-time. With its integration to both WhatsApp and Messenger, you can access its services on your preferred platform and enjoy a seamless conversational experience.
 
 ## Features
 
