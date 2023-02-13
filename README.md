@@ -13,6 +13,7 @@ Vectrix is a multi-functional chatbot powered by GPT-3, with the ability to conn
 
 - Python 3.8+
 - Flask
+- Postgres Database
 - A WhatsApp account
 
 ## Installation
