@@ -1,5 +1,5 @@
-# AppGPT
-APP GPT is a simple GPT and WhatsApp connector 
+# Fluxly
+Fluxly is a simple GPT and WhatsApp connector 
 This app allows you to connect your WhatsApp account to GPT-3 (Generative Pre-trained Transformer 3) and have conversations with the AI.
 
 ## Features
