@@ -4,3 +4,4 @@ flask
 openai
 requests
 sqlalchemy
+psycopg2
